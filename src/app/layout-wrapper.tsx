@@ -1,8 +1,10 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import dynamic from 'next/dynamic';
+
+const Navbar = dynamic(() => import('@/components/layout/Navbar'), { ssr: false });
+const Footer = dynamic(() => import('@/components/layout/Footer'), { ssr: false });
 
 export default function LayoutWrapper({
   children,

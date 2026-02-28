@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -28,17 +27,19 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            {/* CSS hover replaces motion.div — no JS listener; explicit dimensions prevent CLS */}
-            <div className="relative transition-transform duration-300 hover:scale-105">
-              <Image
-                src="/logo.svg"
-                alt="Royal Artisans Logo"
-                width={160}
-                height={64}
-                priority
-                className="h-16 w-auto object-contain"
-              />
-            </div>
+            <motion.div
+              className="relative"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="relative">
+                <img
+                  src="/logo.svg"
+                  alt="Royal Artisans Logo"
+                  className="h-16 w-auto"
+                />
+              </div>
+            </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
