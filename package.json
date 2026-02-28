@@ -15,7 +15,9 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
+    "db:migrate-mysql": "tsx prisma/migrate-from-mysql.ts",
     "db:studio": "prisma studio",
+    "db:import": "tsx prisma/import-old-data.ts",
     "db:reset": "tsx scripts/reset-data.ts",
     "postinstall": "prisma generate",
     "deploy": "./scripts/deploy.sh",
@@ -52,6 +54,6 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.20.5",
-    "typescript": "^5"
+    "typescript": "5.9.3"
   }
 }
