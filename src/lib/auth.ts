@@ -2,11 +2,15 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { AuthUser, LoginCredentials, RegisterCredentials } from '@/types';
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set. Set it in your .env file.');
-}
-const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = '7d';
+
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not set.');
+  }
+  return secret;
+}
 
 export function hashPassword(password: string): string {
   return bcrypt.hashSync(password, 12);
@@ -17,12 +21,12 @@ export function comparePasswords(password: string, hashedPassword: string): bool
 }
 
 export function generateToken(userId: string): string {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign({ userId }, getJwtSecret(), { expiresIn: JWT_EXPIRES_IN });
 }
 
 export function verifyToken(token: string): { userId: string } | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const decoded = jwt.verify(token, getJwtSecret()) as { userId: string };
     return decoded;
   } catch (error) {
     return null;

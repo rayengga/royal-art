@@ -3,10 +3,12 @@ import jwt from 'jsonwebtoken'
 import { NextRequest } from 'next/server'
 import { prisma } from './prisma'
 
-const JWT_SECRET = process.env.JWT_SECRET
-
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set. Set it in your environment.')
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not set.')
+  }
+  return secret
 }
 
 export interface AuthPayload {
@@ -24,12 +26,12 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 export function generateToken(payload: AuthPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: '7d' })
 }
 
 export function verifyToken(token: string): AuthPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as AuthPayload
+    return jwt.verify(token, getJwtSecret()) as AuthPayload
   } catch {
     return null
   }
