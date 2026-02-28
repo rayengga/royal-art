@@ -1,0 +1,13 @@
+# Product images are already deployed on Vercel from previous deployment
+# Excluding them here to avoid upload timeout (74MB)
+# They are served from the existing /public/images/products/ on Vercel CDN
+public/images/products/
+
+# Dev/local files
+prisma/dev.db
+prisma/dev.db-journal
+database_backup.sql
+old-data.sql
+database_backups/
+cookies.txt
+*.bak
