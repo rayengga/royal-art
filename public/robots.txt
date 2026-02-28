@@ -1,0 +1,24 @@
+# Royal Artisanat - Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://royal-artisanat.store/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin
+Disallow: /api
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /checkout
+
+# Allow search engines to index main pages
+Allow: /
+Allow: /shop
+Allow: /about
+Allow: /contact
+Allow: /product/*
+
+# Crawl delay for better server performance
+Crawl-delay: 1
