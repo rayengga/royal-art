@@ -1,49 +1,56 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
+  const t = useTranslations('nav');
 
   const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Shop', href: '/shop' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: t('home'), href: '/' as const },
+    { name: t('shop'), href: '/shop' as const },
+    { name: t('about'), href: '/about' as const },
+    { name: t('contact'), href: '/contact' as const },
   ];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-pure-white/95 backdrop-blur-md border-b border-light-brown/20 card-shadow">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-pure-white/95 backdrop-blur-md border-b border-light-brown/20 card-shadow overflow-visible">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <motion.div
-              className="relative"
+              className="relative z-10"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="relative">
-                <img
+              <div className="relative w-[120px] h-[120px] md:w-28 md:h-28 -my-7 md:-my-6">
+                <Image
                   src="/logo.svg"
                   alt="Royal Artisans Logo"
-                  className="h-16 w-auto"
+                  width={120}
+                  height={120}
+                  className="h-[120px] md:h-28 w-auto"
+                  priority
                 />
               </div>
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -56,7 +63,10 @@ const Navbar = () => {
           </div>
 
           {/* Right side icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-3">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
             {/* Cart */}
             <Link href="/cart" className="relative p-2 hover:bg-soft-gold/10 rounded-full transition-all duration-300 text-dark-gray hover:text-soft-gold">
               <ShoppingCart className="w-5 h-5" />
@@ -81,23 +91,23 @@ const Navbar = () => {
                       href="/admin"
                       className="hidden sm:flex items-center px-3 py-1.5 bg-gradient-to-r from-soft-gold/20 to-electric-blue/20 border border-soft-gold/30 rounded-lg text-sm font-medium text-soft-gold hover:from-soft-gold/30 hover:to-electric-blue/30 transition-all duration-300"
                     >
-                      Admin
+                      {t('admin')}
                     </Link>
                   )}
                   <span className="hidden sm:block text-sm text-medium-gray">
-                    Welcome, {user?.name?.split(' ')[0] || user?.name}
+                    {t('welcome')}{user?.name?.split(' ')[0] || user?.name}
                   </span>
                   <Link
                     href="/profile"
                     className="p-2 hover:bg-soft-gold/10 rounded-full transition-all duration-300 text-dark-gray hover:text-soft-gold"
-                    title="Profile"
+                    title={t('profile')}
                   >
                     <User className="w-5 h-5" />
                   </Link>
                   <button
                     onClick={logout}
                     className="hidden sm:flex p-2 hover:bg-red-50 rounded-full transition-all duration-300 text-dark-gray hover:text-red-500"
-                    title="Logout"
+                    title={t('logout')}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -167,7 +177,7 @@ const Navbar = () => {
                           className="block px-4 py-2 bg-gradient-to-r from-soft-gold/20 to-electric-blue/20 border border-soft-gold/30 rounded-lg text-soft-gold hover:from-soft-gold/30 hover:to-electric-blue/30 transition-all duration-300 font-medium"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          Admin Dashboard
+                          {t('adminDashboard')}
                         </Link>
                       </motion.div>
                     )}
@@ -183,7 +193,7 @@ const Navbar = () => {
                         className="block px-4 py-2 text-dark-gray hover:text-electric-blue hover:bg-warm-beige rounded-lg transition-all duration-300 font-medium"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        My Profile
+                        {t('myProfile')}
                       </Link>
                     </motion.div>
                     
@@ -200,7 +210,7 @@ const Navbar = () => {
                         }}
                         className="block w-full text-left px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-all duration-300 font-medium"
                       >
-                        Logout
+                        {t('logout')}
                       </button>
                     </motion.div>
                   </>
@@ -215,7 +225,7 @@ const Navbar = () => {
                       className="block px-4 py-2 text-dark-gray hover:text-electric-blue hover:bg-warm-beige rounded-lg transition-all duration-300 font-medium"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Login
+                      {t('login')}
                     </Link>
                   </motion.div>
                 )}

@@ -12,7 +12,8 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAdminPage = pathname?.startsWith('/admin');
+  // Check for admin page with or without locale prefix: /admin, /fr/admin, /en/admin, /ar/admin
+  const isAdminPage = pathname?.startsWith('/admin') || /^\/(fr|en|ar)\/admin/.test(pathname || '');
 
   if (isAdminPage) {
     // Admin pages without navbar and footer

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useCart } from '@/context/CartContext';
-import { Heart, ShoppingCart, ArrowLeft, Star, Truck, Shield, RefreshCw, Package, ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+
+import {  Heart, ShoppingCart, ArrowLeft, Star, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link, useRouter } from '@/i18n/navigation';
 import ProductCard from '@/components/ui/ProductCard';
 
 // Tunisia governorates list
@@ -67,6 +69,8 @@ export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { addToCart } = useCart();
+  const t = useTranslations('product');
+  const tb = useTranslations('buy');
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -185,6 +189,29 @@ export default function ProductDetailPage() {
       prevRecommendedSlide();
     } else if (info.offset.x < -swipeThreshold) {
       nextRecommendedSlide();
+    }
+  };
+
+  // Native touch swipe for recommended products
+  const recTouchStartX = useRef(0);
+  const recTouchEndX = useRef(0);
+
+  const handleRecTouchStart = (e: React.TouchEvent) => {
+    recTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleRecTouchMove = (e: React.TouchEvent) => {
+    recTouchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleRecTouchEnd = () => {
+    const diff = recTouchStartX.current - recTouchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextRecommendedSlide();
+      } else {
+        prevRecommendedSlide();
+      }
     }
   };
 
@@ -668,25 +695,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Features */}
-            <div className="border-t border-border pt-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Features</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Truck className="w-5 h-5 text-muted-foreground" />
-                  <span className="text-sm">Free shipping on orders over $50</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Shield className="w-5 h-5 text-muted-foreground" />
-                  <span className="text-sm">1 year warranty</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RefreshCw className="w-5 h-5 text-muted-foreground" />
-                  <span className="text-sm">30-day return policy</span>
-                </div>
-              </div>
-            </div>
-
             {/* Category */}
             <div className="border-t border-border pt-6">
               <p className="text-sm text-muted-foreground">
@@ -759,15 +767,16 @@ export default function ProductDetailPage() {
                 ))}
               </div>
             ) : (
-              <div className="relative overflow-hidden">
+              <div
+                className="relative overflow-hidden"
+                onTouchStart={handleRecTouchStart}
+                onTouchMove={handleRecTouchMove}
+                onTouchEnd={handleRecTouchEnd}
+              >
                 <motion.div
                   animate={{ x: `-${recommendedSlide * slidePercentage}%` }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.1}
-                  onDragEnd={handleDragEnd}
-                  className="flex cursor-grab active:cursor-grabbing"
+                  className="flex"
                 >
                   {recommendedProducts.map((recProduct) => (
                     <div

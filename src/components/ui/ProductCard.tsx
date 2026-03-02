@@ -1,13 +1,14 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/utils/helpers';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +19,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, className = '', priority = false }) => {
   const { addToCart } = useCart();
+  const t = useTranslations('productCard');
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -59,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className = '', prio
                 className="w-full bg-white text-gray-900 py-3 font-light tracking-[0.15em] text-xs uppercase transition-all duration-300 hover:bg-gray-900 hover:text-white flex items-center justify-center gap-2"
               >
                 <ShoppingCart className="w-4 h-4" />
-                <span>Ajout rapide</span>
+                <span>{t('quickAdd')}</span>
               </motion.button>
             </div>
           )}
@@ -68,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className = '', prio
           {!product.inStock && (
             <div className="absolute inset-0 bg-white/90 flex items-center justify-center">
               <div className="text-gray-600 px-6 py-3 font-light tracking-[0.2em] text-xs uppercase">
-                Rupture de stock
+                {t('outOfStock')}
               </div>
             </div>
           )}

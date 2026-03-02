@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { CartProvider } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import { Menu } from 'lucide-react';
 
-export default function AdminLayout({
+function AdminLayoutInner({
   children,
 }: {
   children: React.ReactNode;
@@ -15,16 +16,22 @@ export default function AdminLayout({
   const { user, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== 'ADMIN')) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !loading && (!user || user.role !== 'ADMIN')) {
       router.push('/login');
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, mounted]);
 
-  if (loading) {
+  // Render nothing on server to avoid hydration mismatch
+  if (!mounted || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center" suppressHydrationWarning>
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-soft-gold"></div>
       </div>
     );
@@ -64,5 +71,19 @@ export default function AdminLayout({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <AdminLayoutInner>{children}</AdminLayoutInner>
+      </CartProvider>
+    </AuthProvider>
   );
 }

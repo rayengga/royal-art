@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Clock, Send, MessageCircle, Facebook, Instagram } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const t = useTranslations('contact');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,14 +34,14 @@ export default function ContactPage() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="flex items-center justify-center gap-3 mb-8">
               <div className="h-px w-12 bg-amber-400" />
-              <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">Contact</span>
+              <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">{t('badge')}</span>
               <div className="h-px w-12 bg-amber-400" />
             </motion.div>
             <motion.h1 className="text-4xl sm:text-5xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-              Contactez <span className="block font-serif italic text-amber-800 mt-2">Royal Artisanat</span>
+              {t('titlePart1')} <span className="block font-serif italic text-amber-800 mt-2">{t('titlePart2')}</span>
             </motion.h1>
             <motion.p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto font-light" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              Nous sommes à votre écoute pour toute question ou collaboration
+              {t('subtitle')}
             </motion.p>
           </motion.div>
         </div>
@@ -50,48 +52,48 @@ export default function ContactPage() {
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="flex items-center gap-3 mb-8">
                 <div className="h-px w-12 bg-amber-400" />
-                <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">Contactez-nous</span>
+                <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">{t('formBadge')}</span>
               </motion.div>
               <motion.h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-6 leading-tight" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
-                Envoyez-nous <span className="block font-serif italic text-amber-800 mt-1">un message</span>
+                {t('formTitle1')} <span className="block font-serif italic text-amber-800 mt-1">{t('formTitle2')}</span>
               </motion.h2>
               <motion.p className="text-gray-600 mb-8 font-light" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
-                Si vous avez de bons produits que vous fabriquez ou si vous souhaitez travailler avec nous, contactez-nous.
+                {t('formIntro')}
               </motion.p>
               {isSubmitted ? (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-8 text-center">
                   <div className="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center mx-auto mb-4"><Send className="w-8 h-8 text-white" /></div>
-                  <h3 className="text-xl font-light text-gray-900 mb-2">Message envoyé!</h3>
-                  <p className="text-gray-600 font-light">Nous vous répondrons bientôt.</p>
+                  <h3 className="text-xl font-light text-gray-900 mb-2">{t('successTitle')}</h3>
+                  <p className="text-gray-600 font-light">{t('successMessage')}</p>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">Nom</label>
+                    <label htmlFor="name" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">{t('name')}</label>
                     <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 border border-amber-200/50 focus:border-amber-400 focus:outline-none transition-colors font-light" />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">Email</label>
+                    <label htmlFor="email" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">{t('email')}</label>
                     <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 border border-amber-200/50 focus:border-amber-400 focus:outline-none transition-colors font-light" />
                   </div>
                   <div>
-                    <label htmlFor="subject" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">Sujet</label>
+                    <label htmlFor="subject" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">{t('subject')}</label>
                     <input type="text" id="subject" name="subject" value={formData.subject} onChange={handleInputChange} required className="w-full px-4 py-3 border border-amber-200/50 focus:border-amber-400 focus:outline-none transition-colors font-light" />
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">Message</label>
+                    <label htmlFor="message" className="block text-sm text-gray-700 mb-2 font-light tracking-wide">{t('message')}</label>
                     <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={6} className="w-full px-4 py-3 border border-amber-200/50 focus:border-amber-400 focus:outline-none transition-colors font-light resize-none" />
                   </div>
                   <motion.button type="submit" disabled={isSubmitting} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 font-light tracking-wide transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                    {isSubmitting ? (<><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Envoi en cours...</>) : (<><Send className="w-5 h-5" />Envoyer</>)}
+                    {isSubmitting ? (<><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />{t('sending')}</>) : (<><Send className="w-5 h-5" />{t('send')}</>)}
                   </motion.button>
                 </form>
               )}
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }} className="lg:pt-20">
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }} className="bg-gradient-to-br from-amber-50 to-orange-50/50 border border-amber-200/50 p-10">
-                <h3 className="text-2xl font-light text-gray-900 mb-2">Rejoignez notre <span className="block font-serif italic text-amber-800 mt-1">communauté</span></h3>
-                <p className="text-gray-600 mb-8 font-light">Suivez-nous sur les réseaux sociaux pour découvrir nos dernières créations</p>
+                <h3 className="text-2xl font-light text-gray-900 mb-2">{t('communityTitle1')} <span className="block font-serif italic text-amber-800 mt-1">{t('communityTitle2')}</span></h3>
+                <p className="text-gray-600 mb-8 font-light">{t('communityDesc')}</p>
                 <div className="space-y-4">
                   {[
                     { name: 'Facebook', url: 'https://www.facebook.com/royalart.tn', Icon: Facebook },
@@ -108,7 +110,7 @@ export default function ContactPage() {
                   })}
                 </div>
                 <div className="mt-8 pt-8 border-t border-amber-200/50">
-                  <p className="text-sm text-gray-500 font-light text-center">Partagez votre passion pour l'artisanat authentique</p>
+                  <p className="text-sm text-gray-500 font-light text-center">{t('communityFooter')}</p>
                 </div>
               </motion.div>
             </motion.div>

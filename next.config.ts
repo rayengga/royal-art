@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   // ─── React Strict Mode ──────────────────────────────────────────────────
@@ -12,16 +15,6 @@ const nextConfig: NextConfig = {
       '@/components/ui',
       '@/components/layout',
     ],
-  },
-
-  // ─── Turbopack dev rules ──────────────────────────────────────────────────
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
   },
 
   // ─── Image optimisation ───────────────────────────────────────────────────
@@ -93,4 +86,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

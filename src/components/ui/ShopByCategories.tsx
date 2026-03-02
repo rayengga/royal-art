@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, PanInfo } from 'framer-motion';
-import Link from 'next/link';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 interface Category {
   id: string;
@@ -25,6 +26,7 @@ const ShopByCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const t = useTranslations('categories');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -74,12 +76,26 @@ const ShopByCategories = () => {
     setCurrentSlide(index);
   };
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const swipeThreshold = 50;
-    if (info.offset.x > swipeThreshold) {
-      prevSlide();
-    } else if (info.offset.x < -swipeThreshold) {
-      nextSlide();
+  // Native touch swipe handling
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
     }
   };
 
@@ -101,7 +117,7 @@ const ShopByCategories = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            La Sélection De La Maison
+            {t('title')}
           </motion.h2>
 
           <motion.p
@@ -111,7 +127,7 @@ const ShopByCategories = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            Découvrez nos collections
+            {t('subtitle')}
           </motion.p>
         </motion.div>
 
@@ -161,7 +177,7 @@ const ShopByCategories = () => {
                       </h3>
                       
                       <div className="flex items-center gap-2 text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
-                        <span className="text-sm font-light tracking-wider uppercase">Découvrir</span>
+                        <span className="text-sm font-light tracking-wider uppercase">{t('discover')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </div>
                     </motion.div>
@@ -174,24 +190,24 @@ const ShopByCategories = () => {
             <div className="md:hidden">
               {categories.length > 0 && (
                 <div className="relative -mx-4 sm:-mx-6">
-                  <div className="overflow-hidden">
+                  <div
+                    className="overflow-hidden"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                  >
                     <motion.div
                       animate={{ x: `-${currentSlide * 100}%` }}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      drag="x"
-                      dragConstraints={{ left: 0, right: 0 }}
-                      dragElastic={0.1}
-                      onDragEnd={handleDragEnd}
                       className="flex"
                     >
                       {categories.map((category, index) => (
-                        <motion.div
+                        <div
                           key={category.id}
                           className="w-full flex-shrink-0 px-4 sm:px-6"
                         >
                           <Link href={`/shop?category=${category.id}`}>
                             <motion.div
-                              initial={{ opacity: 0.8, scale: 0.98 }}
                               animate={{ 
                                 opacity: index === currentSlide ? 1 : 0.8,
                                 scale: index === currentSlide ? 1 : 0.98
@@ -217,13 +233,13 @@ const ShopByCategories = () => {
                                 </h3>
                                 
                                 <div className="flex items-center gap-2 text-gray-600">
-                                  <span className="text-sm font-light tracking-wider uppercase">Découvrir</span>
+                                  <span className="text-sm font-light tracking-wider uppercase">{t('discover')}</span>
                                   <ArrowRight className="w-4 h-4" />
                                 </div>
                               </div>
                             </motion.div>
                           </Link>
-                        </motion.div>
+                        </div>
                       ))}
                     </motion.div>
                   </div>
@@ -239,7 +255,7 @@ const ShopByCategories = () => {
                             ? 'bg-gray-900 w-8' 
                             : 'bg-gray-300 w-1.5'
                         }`}
-                        aria-label={`Aller à la collection ${index + 1}`}
+                        aria-label={t('goToCollection', { n: index + 1 })}
                       />
                     ))}
                   </div>
@@ -249,7 +265,7 @@ const ShopByCategories = () => {
           </>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-600">Aucune catégorie disponible pour le moment.</p>
+            <p className="text-gray-600">{t('empty')}</p>
           </div>
         )}
 
@@ -267,7 +283,7 @@ const ShopByCategories = () => {
               whileTap={{ scale: 0.98 }}
               className="bg-gray-900 text-white px-12 py-4 font-light tracking-widest text-sm uppercase transition-all duration-300 inline-flex items-center gap-3 hover:gap-4"
             >
-              <span>Explorer toutes les collections</span>
+              <span>{t('exploreAll')}</span>
               <ArrowRight className="w-5 h-5" />
             </motion.button>
           </Link>

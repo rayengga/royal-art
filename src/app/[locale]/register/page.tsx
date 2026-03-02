@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Eye, EyeOff, Mail, Lock, User, UserPlus, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
@@ -12,6 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function RegisterPage() {
   const router = useRouter();
   const { register } = useAuth();
+  const t = useTranslations('register');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -40,35 +42,35 @@ export default function RegisterPage() {
     const newErrors: {[key: string]: string} = {};
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = t('errors.firstNameRequired');
     } else if (formData.firstName.trim().length < 2) {
-      newErrors.firstName = 'First name must be at least 2 characters';
+      newErrors.firstName = t('errors.firstNameMinLength');
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = t('errors.lastNameRequired');
     } else if (formData.lastName.trim().length < 2) {
-      newErrors.lastName = 'Last name must be at least 2 characters';
+      newErrors.lastName = t('errors.lastNameMinLength');
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('errors.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('errors.emailInvalid');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('errors.passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('errors.passwordMinLength');
     } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+      newErrors.password = t('errors.passwordComplexity');
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = t('errors.confirmPasswordRequired');
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('errors.passwordsMismatch');
     }
 
     setErrors(newErrors);
@@ -99,10 +101,10 @@ export default function RegisterPage() {
         // Redirect to dashboard or login page
         router.push('/login?registered=true');
       } else {
-        setErrors({ submit: result.error || 'Registration failed. Please try again.' });
+        setErrors({ submit: result.error || t('errors.registrationFailed') });
       }
     } catch (error) {
-      setErrors({ submit: 'An error occurred during registration. Please try again.' });
+      setErrors({ submit: t('errors.registrationError') });
     } finally {
       setIsLoading(false);
     }
@@ -121,10 +123,10 @@ export default function RegisterPage() {
             <UserPlus className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-glow-blue mb-2">
-            Create Account
+            {t('title')}
           </h1>
           <p className="text-muted-foreground">
-            Join our community and start your laser engraving journey today
+            {t('subtitle')}
           </p>
           <div className="engraving-line mx-auto mt-4" style={{ width: '100px' }} />
         </motion.div>
@@ -145,7 +147,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium mb-2 text-foreground">
-                  First Name
+                  {t('firstName')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -155,7 +157,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    placeholder="First name"
+                    placeholder={t('firstNamePlaceholder')}
                     className={`form-input pl-10 ${errors.firstName ? 'border-red-500' : ''}`}
                   />
                 </div>
@@ -166,7 +168,7 @@ export default function RegisterPage() {
               
               <div>
                 <label htmlFor="lastName" className="block text-sm font-medium mb-2 text-foreground">
-                  Last Name
+                  {t('lastName')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -176,7 +178,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    placeholder="Last name"
+                    placeholder={t('lastNamePlaceholder')}
                     className={`form-input pl-10 ${errors.lastName ? 'border-red-500' : ''}`}
                   />
                 </div>
@@ -188,7 +190,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
-                Email Address
+                {t('email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -209,7 +211,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2 text-foreground">
-                Password
+                {t('password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -219,7 +221,7 @@ export default function RegisterPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Create a strong password"
+                  placeholder={t('passwordPlaceholder')}
                   className={`form-input pl-10 pr-10 ${errors.password ? 'border-red-500' : ''}`}
                 />
                 <button
@@ -234,13 +236,13 @@ export default function RegisterPage() {
                 <p className="text-red-400 text-xs mt-1 leading-relaxed">{errors.password}</p>
               )}
               <div className="mt-2 text-xs text-muted-foreground">
-                Password must contain at least 6 characters with uppercase, lowercase, and numbers.
+                {t('passwordHelp')}
               </div>
             </div>
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-foreground">
-                Confirm Password
+                {t('confirmPassword')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -250,7 +252,7 @@ export default function RegisterPage() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  placeholder="Confirm your password"
+                  placeholder={t('confirmPasswordPlaceholder')}
                   className={`form-input pl-10 pr-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
                 />
                 <button
@@ -275,13 +277,13 @@ export default function RegisterPage() {
                 className="h-4 w-4 text-primary focus:ring-primary border-border rounded bg-secondary mt-1"
               />
               <label htmlFor="terms" className="ml-3 block text-sm text-muted-foreground">
-                I agree to the{' '}
+                {t('agreeToTerms')}{' '}
                 <Link href="/terms" className="text-primary hover:text-primary/80 transition-colors">
-                  Terms of Service
+                  {t('termsOfService')}
                 </Link>{' '}
                 and{' '}
                 <Link href="/privacy" className="text-primary hover:text-primary/80 transition-colors">
-                  Privacy Policy
+                  {t('privacyPolicy')}
                 </Link>
               </label>
             </div>
@@ -294,11 +296,11 @@ export default function RegisterPage() {
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="laser-spinner w-5 h-5 rounded-full mr-2" />
-                  Creating account...
+                  {t('creating')}
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
-                  Create Account
+                  {t('createAccount')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
               )}
@@ -312,7 +314,7 @@ export default function RegisterPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-card text-muted-foreground">
-                  Already have an account?
+                  {t('alreadyHaveAccount')}
                 </span>
               </div>
             </div>
@@ -320,7 +322,7 @@ export default function RegisterPage() {
             <div className="mt-6">
               <Button asChild variant="outline" className="w-full">
                 <Link href="/login">
-                  Sign In Instead
+                  {t('signIn')}
                 </Link>
               </Button>
             </div>
@@ -334,8 +336,7 @@ export default function RegisterPage() {
           className="text-center"
         >
           <p className="text-xs text-muted-foreground leading-relaxed">
-            By creating an account, you acknowledge that your information will be handled 
-            according to our privacy policy and terms of service.
+            {t('legalText')}
           </p>
         </motion.div>
       </div>

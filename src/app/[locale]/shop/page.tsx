@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import ProductCard from '@/components/ui/ProductCard';
 import ProductFilters from '@/components/ui/ProductFilters';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +24,7 @@ const PRODUCTS_PER_LOAD = 12;
 const ShopPage = () => {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
+  const t = useTranslations('shop');
   
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterOptions>({
@@ -266,16 +268,16 @@ const ShopPage = () => {
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-12 bg-amber-400" />
               <span className="text-xs uppercase tracking-[0.3em] text-amber-700 font-light">
-                Collection
+                {t('badge')}
               </span>
               <div className="h-px w-12 bg-amber-400" />
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-gray-900 mb-6 tracking-wide">
-              Notre <span className="italic font-serif">Boutique</span>
+              {t('titlePart1')} <span className="italic font-serif">{t('titlePart2')}</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 font-light tracking-wide leading-relaxed">
-              Découvrez notre collection de sacs artisanaux en cuir, fabriqués à la main en Tunisie
+              {t('description')}
             </p>
           </motion.div>
         </div>
@@ -308,7 +310,7 @@ const ShopPage = () => {
               {/* Toolbar */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 pb-6 border-b border-amber-200/50 space-y-4 sm:space-y-0">
                 <div className="text-sm text-gray-600 font-light tracking-wide">
-                  <span className="text-amber-800 font-normal">{filteredProducts.length}</span> sur {totalProducts} produits
+                  <span className="text-amber-800 font-normal">{filteredProducts.length}</span> {t('of')} {totalProducts} {t('products')}
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -343,12 +345,12 @@ const ShopPage = () => {
                       onChange={(e) => handleSortChange(e.target.value)}
                       className="appearance-none bg-white border border-amber-200 px-4 py-2.5 pr-10 text-sm font-light tracking-wide focus:outline-none focus:border-amber-400 transition-colors text-gray-700"
                     >
-                      <option value="createdAt-desc">Nouveautés</option>
-                      <option value="createdAt-asc">Anciens</option>
-                      <option value="name-asc">Nom A-Z</option>
-                      <option value="name-desc">Nom Z-A</option>
-                      <option value="price-asc">Prix croissant</option>
-                      <option value="price-desc">Prix décroissant</option>
+                      <option value="createdAt-desc">{t('sortNewest')}</option>
+                      <option value="createdAt-asc">{t('sortOldest')}</option>
+                      <option value="name-asc">{t('sortNameAZ')}</option>
+                      <option value="name-desc">{t('sortNameZA')}</option>
+                      <option value="price-asc">{t('sortPriceAsc')}</option>
+                      <option value="price-desc">{t('sortPriceDesc')}</option>
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none text-amber-700" />
                   </div>
@@ -395,10 +397,10 @@ const ShopPage = () => {
                         {loadingMore ? (
                           <div className="flex items-center space-x-3">
                             <div className="w-4 h-4 border-2 border-amber-300 border-t-amber-700 rounded-full animate-spin"></div>
-                            <span>Chargement...</span>
+                            <span>{t('loadingMore')}</span>
                           </div>
                         ) : (
-                          <span>Voir plus de produits</span>
+                          <span>{t('viewMore')}</span>
                         )}
                       </Button>
                     </div>
@@ -408,17 +410,17 @@ const ShopPage = () => {
                 <div className="text-center py-24">
                   <div className="text-7xl mb-6 opacity-20">🔍</div>
                   <h3 className="text-2xl font-light text-gray-900 mb-3 tracking-wide">
-                    Aucun produit trouvé
+                    {t('noProducts')}
                   </h3>
                   <p className="text-gray-600 font-light mb-8 tracking-wide">
-                    Essayez d'ajuster vos critères de recherche ou de filtrage
+                    {t('noProductsDesc')}
                   </p>
                   <Button 
                     onClick={handleClearFilters} 
                     variant="outline"
                     className="px-8 py-3 border border-amber-300 hover:border-amber-600 hover:bg-amber-700 hover:text-white transition-all duration-300 text-gray-900 font-light tracking-[0.15em] uppercase text-sm"
                   >
-                    Réinitialiser les filtres
+                    {t('resetFilters')}
                   </Button>
                 </div>
               )}

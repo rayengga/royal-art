@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
@@ -12,6 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const t = useTranslations('login');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,15 +38,15 @@ export default function LoginPage() {
     const newErrors: {[key: string]: string} = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('errors.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('errors.emailInvalid');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('errors.passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('errors.passwordMinLength');
     }
 
     setErrors(newErrors);
@@ -63,17 +65,17 @@ export default function LoginPage() {
       const result = await login({ email: formData.email, password: formData.password });
       
       if (result.success) {
-        // Check if user is admin and redirect accordingly
-        if (formData.email === 'admin@decory.com') {
+        // Redirect based on actual role, not a hardcoded email
+        if (result.user?.role === 'ADMIN') {
           router.push('/admin');
         } else {
           router.push('/');
         }
       } else {
-        setErrors({ submit: result.error || 'Login failed. Please try again.' });
+        setErrors({ submit: result.error || t('errors.loginFailed') });
       }
     } catch (error) {
-      setErrors({ submit: 'Invalid email or password. Please try again.' });
+      setErrors({ submit: t('errors.invalidCredentials') });
     } finally {
       setIsLoading(false);
     }
@@ -92,10 +94,10 @@ export default function LoginPage() {
             <User className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-glow-blue mb-2">
-            Welcome Back
+            {t('title')}
           </h1>
           <p className="text-muted-foreground">
-            Sign in to your account to continue your laser engraving journey
+            {t('subtitle')}
           </p>
           <div className="engraving-line mx-auto mt-4" style={{ width: '100px' }} />
         </motion.div>
@@ -115,7 +117,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
-                Email Address
+                {t('email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -136,7 +138,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2 text-foreground">
-                Password
+                {t('password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -146,7 +148,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Enter your password"
+                  placeholder={t('passwordPlaceholder')}
                   className={`form-input pl-10 pr-10 ${errors.password ? 'border-red-500' : ''}`}
                 />
                 <button
@@ -171,14 +173,14 @@ export default function LoginPage() {
                   className="h-4 w-4 text-primary focus:ring-primary border-border rounded bg-secondary"
                 />
                 <label htmlFor="remember" className="ml-2 block text-sm text-muted-foreground">
-                  Remember me
+                  {t('rememberMe')}
                 </label>
               </div>
               <Link
                 href="/forgot-password"
                 className="text-sm text-primary hover:text-primary/80 transition-colors"
               >
-                Forgot password?
+                {t('forgotPassword')}
               </Link>
             </div>
 
@@ -190,11 +192,11 @@ export default function LoginPage() {
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="laser-spinner w-5 h-5 rounded-full mr-2" />
-                  Signing in...
+                  {t('signingIn')}
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
-                  Sign In
+                  {t('signIn')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
               )}
@@ -208,7 +210,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-card text-muted-foreground">
-                  Don't have an account?
+                  {t('noAccount')}
                 </span>
               </div>
             </div>
@@ -216,7 +218,7 @@ export default function LoginPage() {
             <div className="mt-6">
               <Button asChild variant="outline" className="w-full">
                 <Link href="/register">
-                  Create Account
+                  {t('createAccount')}
                 </Link>
               </Button>
             </div>
@@ -230,13 +232,13 @@ export default function LoginPage() {
           className="text-center"
         >
           <p className="text-sm text-muted-foreground">
-            By signing in, you agree to our{' '}
+            {t('terms')}{' '}
             <Link href="/terms" className="text-primary hover:text-primary/80">
-              Terms of Service
+              {t('termsOfService')}
             </Link>{' '}
             and{' '}
             <Link href="/privacy" className="text-primary hover:text-primary/80">
-              Privacy Policy
+              {t('privacyPolicy')}
             </Link>
           </p>
         </motion.div>

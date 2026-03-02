@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { 
   User, 
   Mail, 
@@ -58,6 +59,7 @@ interface Order {
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
+  const t = useTranslations('profile');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -187,8 +189,8 @@ export default function ProfilePage() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <h2 className="text-xl text-foreground mb-2">Loading Profile...</h2>
-            <p className="text-muted-foreground">Please wait while we fetch your information</p>
+            <h2 className="text-xl text-foreground mb-2">{t('loading')}</h2>
+            <p className="text-muted-foreground">{t('loadingDesc')}</p>
           </div>
         </div>
       </div>
@@ -209,8 +211,8 @@ export default function ProfilePage() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-glow-blue mb-2">My Profile</h1>
-          <p className="text-muted-foreground">Manage your account information and view your orders</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-glow-blue mb-2">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('subtitle')}</p>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -239,13 +241,13 @@ export default function ProfilePage() {
               {!isEditing ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Member since:</span>
+                    <span className="text-muted-foreground">{t('memberSince')}</span>
                     <span className="text-foreground">
                       {new Date(profile.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Total orders:</span>
+                    <span className="text-muted-foreground">{t('orders')}:</span>
                     <span className="text-foreground">{orders.length}</span>
                   </div>
                   <Button 
@@ -253,14 +255,14 @@ export default function ProfilePage() {
                     className="w-full laser-button"
                   >
                     <Edit2 className="w-4 h-4 mr-2" />
-                    Edit Profile
+                    {t('editProfile')}
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2 text-foreground">
-                      First Name
+                      {t('firstName')}
                     </label>
                     <Input
                       name="firstName"
@@ -271,7 +273,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 text-foreground">
-                      Last Name
+                      {t('lastName')}
                     </label>
                     <Input
                       name="lastName"
@@ -282,7 +284,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 text-foreground">
-                      Email
+                      {t('emailLabel')}
                     </label>
                     <Input
                       name="email"
@@ -299,7 +301,7 @@ export default function ProfilePage() {
                       className="flex-1 laser-button"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      {updateLoading ? 'Saving...' : 'Save'}
+                      {updateLoading ? t('saving') : t('save')}
                     </Button>
                     <Button 
                       onClick={() => {
@@ -330,25 +332,25 @@ export default function ProfilePage() {
             <div className="bg-secondary/30 rounded-xl p-6 border border-primary/20">
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
                 <Package className="w-6 h-6 mr-2 text-primary" />
-                Order History
+                {t('orders')}
               </h2>
 
               {loadingOrders ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-muted-foreground">Loading orders...</p>
+                  <p className="text-muted-foreground">{t('ordersLoading')}</p>
                 </div>
               ) : orders.length === 0 ? (
                 <div className="text-center py-8">
                   <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">No orders yet</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{t('noOrders')}</h3>
                   <p className="text-muted-foreground mb-4">
-                    You haven't placed any orders yet. Start shopping to see your orders here.
+                    {t('noOrdersDesc')}
                   </p>
                   <Button asChild className="laser-button">
-                    <a href="/shop">
-                      Start Shopping
-                    </a>
+                    <Link href="/shop">
+                      {t('startShopping')}
+                    </Link>
                   </Button>
                 </div>
               ) : (
@@ -363,7 +365,7 @@ export default function ProfilePage() {
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h3 className="text-lg font-semibold text-foreground">
-                            Order #{order.id.slice(-8)}
+                            {t('orderPrefix')}{order.id.slice(-8)}
                           </h3>
                           <p className="text-muted-foreground text-sm">
                             {new Date(order.createdAt).toLocaleString()}
@@ -382,7 +384,7 @@ export default function ProfilePage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-medium text-foreground mb-2">Items ({order.orderItems.length})</h4>
+                          <h4 className="font-medium text-foreground mb-2">{t('itemsCount', { n: order.orderItems.length })}</h4>
                           <div className="space-y-2">
                             {order.orderItems.slice(0, 2).map((item, index) => (
                               <div key={index} className="flex items-center gap-3">
@@ -405,25 +407,38 @@ export default function ProfilePage() {
                                     {item.product.name}
                                   </p>
                                   <p className="text-xs text-muted-foreground">
-                                    Qty: {item.quantity} × ${item.price.toFixed(2)}
+                                    {t('itemQuantity', { n: item.quantity })} × ${item.price.toFixed(2)}
                                   </p>
                                 </div>
                               </div>
                             ))}
                             {order.orderItems.length > 2 && (
                               <p className="text-xs text-muted-foreground">
-                                +{order.orderItems.length - 2} more items
+                                {t('moreItems', { n: order.orderItems.length - 2 })}
                               </p>
                             )}
                           </div>
                         </div>
 
                         <div>
-                          <h4 className="font-medium text-foreground mb-2">Shipping Address</h4>
+                          <h4 className="font-medium text-foreground mb-2">{t('shippingAddress')}</h4>
                           <div className="flex items-start gap-2">
                             <MapPin className="w-4 h-4 text-primary mt-0.5" />
                             <p className="text-sm text-muted-foreground">
-                              {order.shippingAddress}
+                              {(() => {
+                                try {
+                                  const parsed = JSON.parse(order.shippingAddress);
+                                  const parts = [
+                                    parsed.customerName,
+                                    parsed.address,
+                                    parsed.governorate,
+                                    parsed.customerPhone && `${t('tel')} ${parsed.customerPhone}`,
+                                  ].filter(Boolean);
+                                  return parts.join(', ');
+                                } catch {
+                                  return order.shippingAddress;
+                                }
+                              })()}
                             </p>
                           </div>
                         </div>

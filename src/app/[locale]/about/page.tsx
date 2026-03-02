@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { useRef, useState, useEffect, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { 
   Target, 
   Award, 
@@ -55,42 +56,45 @@ export default function AboutPage() {
     setMounted(true);
   }, []);
 
+  const t = useTranslations('about');
+  const tw = useTranslations('whyChooseUs');
+
   const stats = [
-    { label: 'Clients Satisfaits', value: '1,000+', icon: Users, color: 'from-blue-500 to-cyan-500' },
-    { label: 'Sacs Fabriqués', value: '5,000+', icon: Scissors, color: 'from-amber-500 to-orange-500' },
-    { label: 'Années d\'Excellence', value: '29+', icon: Award, color: 'from-purple-500 to-pink-500' },
-    { label: 'Modèles Uniques', value: '200+', icon: Star, color: 'from-rose-500 to-red-500' }
+    { label: t('statsClients'), value: '1,000+', icon: Users, color: 'from-blue-500 to-cyan-500' },
+    { label: t('statsBags'), value: '5,000+', icon: Scissors, color: 'from-amber-500 to-orange-500' },
+    { label: t('statsYears'), value: '29+', icon: Award, color: 'from-purple-500 to-pink-500' },
+    { label: t('statsModels'), value: '200+', icon: Star, color: 'from-rose-500 to-red-500' }
   ];
 
   const values = [
     {
       icon: Scissors,
-      title: 'Matériaux de haute qualité',
-      description: 'Conçus avec précision et excellence, nos sacs sont élaborés avec des matériaux de haute qualité pour assurer un confort et une durabilité sans égal.',
+      title: tw('feature1Title'),
+      description: tw('feature1Desc'),
       gradient: 'from-amber-500/20 to-orange-500/20',
       iconColor: 'text-amber-600',
       borderColor: 'border-amber-500/30'
     },
     {
       icon: Palette,
-      title: 'Design raffiné',
-      description: 'Simplicité raffinée. Nos créations expriment l\'essence du design minimaliste, offrant un style élégant qui parle de lui-même.',
+      title: tw('feature2Title'),
+      description: tw('feature2Desc'),
       gradient: 'from-rose-500/20 to-pink-500/20',
       iconColor: 'text-rose-600',
       borderColor: 'border-rose-500/30'
     },
     {
       icon: Shield,
-      title: 'Différentes tailles',
-      description: 'Conçus pour tous les corps et tout le monde, nos sacs embrassent la diversité avec une large gamme de tailles et de formes, célébrant la beauté de l\'individualité.',
+      title: tw('feature3Title'),
+      description: tw('feature3Desc'),
       gradient: 'from-orange-500/20 to-amber-500/20',
       iconColor: 'text-orange-600',
       borderColor: 'border-orange-500/30'
     },
     {
       icon: Heart,
-      title: 'Artisanat authentique',
-      description: 'Chaque pièce raconte une histoire, façonnée avec soin par des artisans talentueux, dans le respect des traditions et du savoir-faire ancestral du Maghreb.',
+      title: tw('feature4Title'),
+      description: tw('feature4Desc'),
       gradient: 'from-pink-500/20 to-rose-500/20',
       iconColor: 'text-pink-600',
       borderColor: 'border-pink-500/30'
@@ -174,7 +178,7 @@ export default function AboutPage() {
             >
               <div className="h-px w-12 bg-gradient-to-r from-transparent to-amber-400" />
               <span className="text-sm tracking-[0.2em] text-amber-700 font-light uppercase">
-                Since 1995
+                {t('heroBadge')}
               </span>
               <div className="h-px w-12 bg-gradient-to-l from-transparent to-amber-400" />
             </motion.div>
@@ -187,14 +191,14 @@ export default function AboutPage() {
               className="text-center mb-12"
             >
               <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-gray-900 mb-6 tracking-tight leading-[1.1]">
-                Royal
+                {t('heroTitle1')}
                 <span className="block font-serif italic mt-2 bg-gradient-to-br from-amber-800 via-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  Artisanat
+                  {t('heroTitle2')}
                 </span>
               </h1>
               
               <p className="text-xl sm:text-2xl text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
-                L'excellence de l'artisanat tunisien au service de votre élégance
+                {t('heroSubtitle')}
               </p>
             </motion.div>
 
@@ -213,8 +217,7 @@ export default function AboutPage() {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="text-center text-base sm:text-lg text-gray-500 leading-relaxed max-w-2xl mx-auto mb-16 font-light"
             >
-              Depuis près de trois décennies, nous créons des sacs à main qui incarnent le raffinement et l'authenticité. 
-              Chaque pièce est une célébration du savoir-faire ancestral maghrébin, réinterprété avec une sensibilité contemporaine.
+              {t('heroDescription')}
             </motion.p>
 
             {/* Sophisticated Stats Grid */}
@@ -225,9 +228,9 @@ export default function AboutPage() {
               className="grid grid-cols-3 gap-px bg-amber-200/30 rounded-lg overflow-hidden max-w-3xl mx-auto"
             >
               {[
-                { value: '29', suffix: 'ans', label: 'D\'excellence' },
-                { value: '5K', suffix: '+', label: 'Créations' },
-                { value: '200', suffix: '+', label: 'Modèles' }
+                { value: '29', suffix: t('statYears'), label: t('statExcellence') },
+                { value: '5K', suffix: '+', label: t('statCreations') },
+                { value: '200', suffix: '+', label: t('statModels') }
               ].map((stat, index) => (
                 <motion.div
                   key={index}
@@ -265,7 +268,7 @@ export default function AboutPage() {
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             className="flex flex-col items-center gap-3"
           >
-            <span className="text-xs text-gray-400 tracking-widest uppercase font-light">Scroll</span>
+            <span className="text-xs text-gray-400 tracking-widest uppercase font-light">{t('scroll')}</span>
             <div className="w-px h-12 bg-gradient-to-b from-amber-400 to-transparent" />
           </motion.div>
         </motion.div>
@@ -288,7 +291,7 @@ export default function AboutPage() {
             >
               <div className="relative aspect-[4/5] overflow-hidden">
                 <Image
-                  src="https://royal-artisanat.store/images/products/about-us-01.jpg"
+                  src="/images/products/about-us-01.jpg"
                   alt="Royal Artisanat craftsmanship"
                   fill
                   className="object-cover"
@@ -306,7 +309,7 @@ export default function AboutPage() {
                 className="absolute -bottom-6 -right-6 bg-white shadow-2xl px-8 py-6 border border-amber-100"
               >
                 <div className="text-5xl font-light text-gray-900 tabular-nums">1995</div>
-                <div className="text-xs text-gray-500 tracking-widest uppercase mt-1">Fondation</div>
+                <div className="text-xs text-gray-500 tracking-widest uppercase mt-1">{t('storyFoundation')}</div>
               </motion.div>
             </motion.div>
 
@@ -328,7 +331,7 @@ export default function AboutPage() {
               >
                 <div className="h-px w-12 bg-amber-400" />
                 <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">
-                  Notre Histoire
+                  {t('storyBadge')}
                 </span>
               </motion.div>
 
@@ -340,17 +343,17 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
               >
-                Une passion pour
+                {t('storyTitle1')}
                 <span className="block font-serif italic text-amber-800 mt-2">
-                  l'artisanat authentique
+                  {t('storyTitle2')}
                 </span>
               </motion.h2>
 
               {/* Content */}
               <div className="space-y-6">
                 {[
-                  "Royal Artisanat est née de la passion pour l'artisanat authentique. Nous créons à la main des sacs pour femmes, des couffins et des trousses en mêlant avec finesse les inspirations marocaines et tunisiennes.",
-                  "Chaque pièce raconte une histoire, façonnée avec soin par des artisans talentueux, dans le respect des traditions et du savoir-faire ancestral du Maghreb."
+                  t('storyP1'),
+                  t('storyP2')
                 ].map((text, index) => (
                   <motion.p
                     key={index}
@@ -374,7 +377,7 @@ export default function AboutPage() {
                 className="mt-10 pt-8 border-t border-amber-200/50"
               >
                 <p className="text-lg sm:text-xl text-amber-800 font-light italic">
-                  "Tradition et excellence, tissées à la main"
+                  &ldquo;{t('storyQuote')}&rdquo;
                 </p>
               </motion.div>
             </motion.div>
@@ -406,7 +409,7 @@ export default function AboutPage() {
               >
                 <div className="h-px w-12 bg-amber-400" />
                 <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">
-                  Notre Mission
+                  {t('missionBadge')}
                 </span>
               </motion.div>
 
@@ -418,18 +421,18 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
               >
-                Faire rayonner
+                {t('missionTitle1')}
                 <span className="block font-serif italic text-amber-800 mt-2">
-                  l'artisanat maghrébin
+                  {t('missionTitle2')}
                 </span>
               </motion.h2>
 
               {/* Content */}
               <div className="space-y-6">
                 {[
-                  "Chez Royal Artisant, notre mission est de faire rayonner l'élégance et l'authenticité de l'artisanat maghrébin à travers des créations uniques.",
-                  "Nous valorisons le travail manuel, le savoir-faire transmis de génération en génération, et l'alliance harmonieuse des cultures tunisienne et marocaine.",
-                  "À travers chaque sac, couffin ou trousse, nous souhaitons offrir aux femmes un accessoire à la fois authentique, durable et chargé d'histoire."
+                  t('missionP1'),
+                  t('missionP2'),
+                  t('missionP3')
                 ].map((text, index) => (
                   <motion.p
                     key={index}
@@ -454,9 +457,9 @@ export default function AboutPage() {
               >
                 <div className="grid grid-cols-3 gap-6">
                   {[
-                    { label: 'Authenticité', icon: '✦' },
-                    { label: 'Élégance', icon: '✦' },
-                    { label: 'Durabilité', icon: '✦' }
+                    { label: t('missionAuthenticity'), icon: '✦' },
+                    { label: t('missionElegance'), icon: '✦' },
+                    { label: t('missionDurability'), icon: '✦' }
                   ].map((value, idx) => (
                     <motion.div
                       key={idx}
@@ -484,8 +487,8 @@ export default function AboutPage() {
             >
               <div className="grid grid-cols-2 gap-4 sm:gap-6">
                 {[
-                  { src: "https://royal-artisanat.store/images/products/about-us-02.jpg", delay: 0.3 },
-                  { src: "https://royal-artisanat.store/images/products/about-us-03.jpg", delay: 0.4 }
+                  { src: "/images/products/about-us-02.jpg", delay: 0.3 },
+                  { src: "/images/products/about-us-03.jpg", delay: 0.4 }
                 ].map((img, index) => (
                   <motion.div
                     key={index}
@@ -565,12 +568,12 @@ export default function AboutPage() {
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
               <span className="text-xs uppercase tracking-[0.3em] text-amber-700 font-light">
-                Nos Chiffres
+                {t('statsBadge')}
               </span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
             </div>
             <h2 className="text-4xl lg:text-5xl font-light text-gray-900 mb-4">
-              L'excellence en <span className="italic font-serif text-amber-800">chiffres</span>
+              {t('statsTitle1')} <span className="italic font-serif text-amber-800">{t('statsTitle2')}</span>
             </h2>
           </motion.div>
 
@@ -697,7 +700,7 @@ export default function AboutPage() {
               className="flex items-center justify-center gap-3 mb-8"
             >
               <div className="h-px w-12 bg-amber-400" />
-              <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">Excellence</span>
+              <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">{tw('badge')}</span>
               <div className="h-px w-12 bg-amber-400" />
             </motion.div>
 
@@ -708,7 +711,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              La qualité est <span className="block font-serif italic text-amber-800 mt-2">notre priorité</span>
+              {tw('titlePart1')} <span className="block font-serif italic text-amber-800 mt-2">{tw('titlePart2')}</span>
             </motion.h2>
 
             <motion.p
@@ -718,8 +721,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              Nos stylistes talentueux ont assemblé des créations qui sont parfaites pour la saison. 
-              Ils ont une variété de façons d'inspirer votre prochaine tenue tendance.
+              {tw('description')}
             </motion.p>
           </motion.div>
 
@@ -869,7 +871,7 @@ export default function AboutPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
               >
-                Glissez pour découvrir nos valeurs
+                {tw('swipeHint')}
               </motion.div>
             </div>
           </div>
@@ -899,7 +901,7 @@ export default function AboutPage() {
             >
               <div className="h-px w-12 bg-amber-400" />
               <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">
-                Suivez-nous
+                {t('followBadge')}
               </span>
               <div className="h-px w-12 bg-amber-400" />
             </motion.div>
@@ -912,9 +914,9 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              Restez
+              {t('followTitle1')}
               <span className="block font-serif italic text-amber-800 mt-2">
-                connectés
+                {t('followTitle2')}
               </span>
             </motion.h2>
 
@@ -925,16 +927,16 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              Découvrez nos dernières créations et inspirations artisanales
+              {t('followDesc')}
             </motion.p>
 
             {/* Social Links Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
               {[
-                { name: 'Facebook', url: 'https://www.facebook.com/royalart.tn', Icon: Facebook },
-                { name: 'Instagram', url: 'https://www.instagram.com/royal.artisanat/', Icon: Instagram },
-                { name: 'WhatsApp', url: 'https://wa.me/21658955494', Icon: MessageCircle },
-                { name: 'Email', url: 'mailto:royalartisants2022@gmail.com', Icon: Mail }
+                { name: t('followFacebook'), url: 'https://www.facebook.com/royalart.tn', Icon: Facebook },
+                { name: t('followInstagram'), url: 'https://www.instagram.com/royal.artisanat/', Icon: Instagram },
+                { name: t('followWhatsapp'), url: 'https://wa.me/21658955494', Icon: MessageCircle },
+                { name: t('followEmail'), url: 'mailto:royalartisants2022@gmail.com', Icon: Mail }
               ].map((social, index) => {
                 const Icon = social.Icon;
                 return (
@@ -983,7 +985,7 @@ export default function AboutPage() {
               className="mt-12 pt-8 border-t border-amber-200/50"
             >
               <p className="text-sm text-gray-500 font-light">
-                Partagez votre passion pour l'artisanat authentique
+                {t('followFooter')}
               </p>
             </motion.div>
           </motion.div>

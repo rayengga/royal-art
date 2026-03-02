@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { ArrowLeft, Package, Truck, CreditCard, CheckCircle, Phone, MapPin, ShoppingBag, User, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -49,6 +50,7 @@ interface CheckoutForm {
 export default function CheckoutPage() {
   const { items, getTotalPrice, getTotalItems, clearCart } = useCart();
   const router = useRouter();
+  const t = useTranslations('checkout');
   
   const [form, setForm] = useState<CheckoutForm>({
     fullName: '',
@@ -81,21 +83,21 @@ export default function CheckoutPage() {
     const newErrors: Partial<CheckoutForm> = {};
     
     if (!form.fullName.trim()) {
-      newErrors.fullName = 'Le nom complet est requis';
+      newErrors.fullName = t('errors.fullNameRequired');
     }
     
     if (!form.address.trim()) {
-      newErrors.address = "L'adresse est requise";
+      newErrors.address = t('errors.addressRequired');
     }
     
     if (!form.governorate) {
-      newErrors.governorate = 'Le gouvernorat est requis';
+      newErrors.governorate = t('errors.governorateRequired');
     }
     
     if (!form.phoneNumber.trim()) {
-      newErrors.phoneNumber = 'Le numéro de téléphone est requis';
+      newErrors.phoneNumber = t('errors.phoneRequired');
     } else if (!/^[0-9]{8}$/.test(form.phoneNumber.trim().replace(/\s/g, ''))) {
-      newErrors.phoneNumber = 'Veuillez entrer un numéro de téléphone valide (8 chiffres)';
+      newErrors.phoneNumber = t('errors.phoneInvalid');
     }
 
     setErrors(newErrors);
@@ -110,7 +112,7 @@ export default function CheckoutPage() {
     }
 
     if (items.length === 0) {
-      alert('Your cart is empty');
+      alert(t('errors.emptyCart'));
       return;
     }
 
@@ -179,15 +181,15 @@ export default function CheckoutPage() {
               <ShoppingBag className="w-16 h-16 text-muted-foreground" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              Votre Panier est Vide
+              {t('emptyCart')}
             </h1>
             <p className="text-muted-foreground mb-8 text-lg">
-              Ajoutez des articles à votre panier avant de passer commande.
+              {t('emptyCartDesc')}
             </p>
             <Button asChild className="clean-button">
               <Link href="/shop">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Continuer vos Achats
+                {t('continueShopping')}
               </Link>
             </Button>
           </motion.div>
@@ -211,37 +213,37 @@ export default function CheckoutPage() {
               <CheckCircle className="w-16 h-16 text-emerald-600" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              Commande Passée avec Succès!
+              {t('success')}
             </h1>
             <p className="text-muted-foreground mb-4 text-lg">
-              Merci pour votre commande! Votre numéro de commande est:
+              {t('successMessage')}
             </p>
             <div className="bg-muted rounded-lg p-4 mb-8 border border-border">
               <span className="font-mono text-lg text-amber-700">{orderId}</span>
             </div>
             <div className="space-y-4 mb-8 text-left bg-white rounded-xl p-6 border border-border shadow-sm">
-              <h3 className="text-xl font-semibold mb-4 text-center">Détails de la Commande</h3>
+              <h3 className="text-xl font-semibold mb-4 text-center">{t('orderDetails')}</h3>
               <div className="flex justify-between items-center">
-                <span>Mode de Paiement:</span>
-                <span className="font-semibold text-amber-700">Paiement à la livraison</span>
+                <span>{t('paymentMethod')}</span>
+                <span className="font-semibold text-amber-700">{t('cashOnDelivery')}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span>Montant Total:</span>
+                <span>{t('totalAmount')}</span>
                 <span className="font-bold text-xl text-amber-700">{orderTotal.toFixed(2)} TND</span>
               </div>
               <div className="flex justify-between items-center">
-                <span>Adresse de Livraison:</span>
+                <span>{t('shippingAddress')}</span>
                 <span className="text-right">{form.address}, {form.governorate}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span>Téléphone:</span>
+                <span>{t('phone')}</span>
                 <span>{form.phoneNumber}</span>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild className="clean-button">
                 <Link href="/shop">
-                  Continuer vos Achats
+                  {t('continueShopping')}
                 </Link>
               </Button>
             </div>
@@ -264,11 +266,11 @@ export default function CheckoutPage() {
           <Button asChild variant="ghost" className="mb-4">
             <Link href="/cart">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour au Panier
+              {t('backToCart')}
             </Link>
           </Button>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Passer la Commande</h1>
-          <p className="text-muted-foreground mt-2">Complétez vos informations de livraison</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">{t('title')}</h1>
+          <p className="text-muted-foreground mt-2">{t('subtitle')}</p>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -281,7 +283,7 @@ export default function CheckoutPage() {
             <div className="bg-white rounded-xl p-6 border border-border shadow-sm">
               <h2 className="text-2xl font-bold mb-6 flex items-center">
                 <Package className="w-6 h-6 mr-2 text-amber-600" />
-                Informations de Livraison
+                {t('shippingInfo')}
               </h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -289,14 +291,14 @@ export default function CheckoutPage() {
                 <div>
                   <label htmlFor="fullName" className="text-sm font-medium mb-2 flex items-center">
                     <User className="w-4 h-4 mr-2" />
-                    Nom Complet *
+                    {t('fullName')}
                   </label>
                   <Input
                     id="fullName"
                     type="text"
                     value={form.fullName}
                     onChange={(e) => handleInputChange('fullName', e.target.value)}
-                    placeholder="Entrez votre nom complet"
+                    placeholder={t('fullNamePlaceholder')}
                     className={errors.fullName ? 'border-red-500' : ''}
                   />
                   {errors.fullName && (
@@ -308,14 +310,14 @@ export default function CheckoutPage() {
                 <div>
                   <label htmlFor="address" className="text-sm font-medium mb-2 flex items-center">
                     <MapPin className="w-4 h-4 mr-2" />
-                    Adresse *
+                    {t('address')}
                   </label>
                   <Input
                     id="address"
                     type="text"
                     value={form.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
-                    placeholder="Entrez votre adresse complète"
+                    placeholder={t('addressPlaceholder')}
                     className={errors.address ? 'border-red-500' : ''}
                   />
                   {errors.address && (
@@ -327,7 +329,7 @@ export default function CheckoutPage() {
                 <div>
                   <label htmlFor="governorate" className="text-sm font-medium mb-2 flex items-center">
                     <MapPin className="w-4 h-4 mr-2" />
-                    Gouvernorat *
+                    {t('governorate')}
                   </label>
                   <select
                     id="governorate"
@@ -335,7 +337,7 @@ export default function CheckoutPage() {
                     onChange={(e) => handleInputChange('governorate', e.target.value)}
                     className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary ${errors.governorate ? 'border-red-500' : 'border-border'}`}
                   >
-                    <option value="">Sélectionnez votre gouvernorat</option>
+                    <option value="">{t('governoratePlaceholder')}</option>
                     {TUNISIA_GOVERNORATES.map((gov) => (
                       <option key={gov} value={gov}>{gov}</option>
                     ))}
@@ -349,7 +351,7 @@ export default function CheckoutPage() {
                 <div>
                   <label htmlFor="phoneNumber" className="text-sm font-medium mb-2 flex items-center">
                     <Phone className="w-4 h-4 mr-2" />
-                    Numéro de Téléphone *
+                    {t('phoneLabel')}
                   </label>
                   <Input
                     id="phoneNumber"
@@ -368,13 +370,13 @@ export default function CheckoutPage() {
                 <div>
                   <label htmlFor="note" className="text-sm font-medium mb-2 flex items-center">
                     <FileText className="w-4 h-4 mr-2" />
-                    Note (Optionnel)
+                    {t('note')}
                   </label>
                   <textarea
                     id="note"
                     value={form.note}
                     onChange={(e) => handleInputChange('note', e.target.value)}
-                    placeholder="Instructions spéciales pour la livraison..."
+                    placeholder={t('notePlaceholder')}
                     rows={3}
                     className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                   />
@@ -383,15 +385,15 @@ export default function CheckoutPage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center">
                     <CreditCard className="w-5 h-5 mr-2 text-amber-600" />
-                    Mode de Paiement
+                    {t('paymentTitle')}
                   </h3>
                   <div className="bg-muted rounded-lg p-4 border border-border">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Truck className="w-6 h-6 mr-3 text-amber-600" />
                         <div>
-                          <p className="font-medium">Paiement à la livraison</p>
-                          <p className="text-sm text-muted-foreground">Payez à la réception de votre commande</p>
+                          <p className="font-medium">{t('cashOnDelivery')}</p>
+                          <p className="text-sm text-muted-foreground">{t('paymentDesc')}</p>
                         </div>
                       </div>
                       <div className="w-4 h-4 rounded-full bg-amber-600 border-2 border-amber-600"></div>
@@ -404,7 +406,7 @@ export default function CheckoutPage() {
                   className="w-full clean-button text-lg py-3"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Commande en cours...' : `Passer la Commande - ${total.toFixed(2)} TND`}
+                  {isSubmitting ? t('processing') : t('placeOrder', { total: total.toFixed(2) })}
                 </Button>
               </form>
             </div>
@@ -417,7 +419,7 @@ export default function CheckoutPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <div className="bg-white rounded-xl p-6 border border-border shadow-sm sticky top-24">
-              <h2 className="text-2xl font-bold mb-6">Récapitulatif</h2>
+              <h2 className="text-2xl font-bold mb-6">{t('summary')}</h2>
               
               {/* Order Items */}
               <div className="space-y-4 mb-6">
@@ -439,7 +441,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate">{item.product.name}</h4>
-                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                      <p className="text-sm text-muted-foreground">{t('qty', { n: item.quantity })}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">{(item.product.price * item.quantity).toFixed(2)} TND</p>
@@ -451,15 +453,15 @@ export default function CheckoutPage() {
               {/* Order Totals */}
               <div className="space-y-3 border-t border-primary/20 pt-6">
                 <div className="flex justify-between">
-                  <span>Subtotal ({totalItems} items)</span>
+                  <span>{t('subtotal')} ({totalItems})</span>
                   <span>{subtotal.toFixed(2)} TND</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Shipping</span>
+                  <span>{t('shipping')}</span>
                   <span>{shipping.toFixed(2)} TND</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold border-t border-primary/20 pt-3">
-                  <span>Total</span>
+                  <span>{t('total')}</span>
                   <span className="text-amber-700">{total.toFixed(2)} TND</span>
                 </div>
               </div>

@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, PanInfo } from 'framer-motion';
-import Link from 'next/link';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import ProductCard from '@/components/ui/ProductCard';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 interface Product {
   id: string;
@@ -20,6 +21,7 @@ const FeaturedProducts = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const t = useTranslations('featured');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -53,14 +55,26 @@ const FeaturedProducts = () => {
 
 
 
-  // Handle touch/swipe gestures
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const swipeThreshold = 50;
-    
-    if (info.offset.x > swipeThreshold) {
-      prevSlide();
-    } else if (info.offset.x < -swipeThreshold) {
-      nextSlide();
+  // Native touch swipe handling
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
     }
   };
 
@@ -110,7 +124,7 @@ const FeaturedProducts = () => {
             className="flex items-center justify-center gap-3 mb-8"
           >
             <div className="h-px w-12 bg-amber-400" />
-            <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">Produits</span>
+            <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">{t('badge')}</span>
             <div className="h-px w-12 bg-amber-400" />
           </motion.div>
 
@@ -121,7 +135,7 @@ const FeaturedProducts = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            Nos <span className="block font-serif italic text-amber-800 mt-2">Créations Vedettes</span>
+            {t('titlePart1')} <span className="block font-serif italic text-amber-800 mt-2">{t('titlePart2')}</span>
           </motion.h2>
 
           <motion.p
@@ -131,7 +145,7 @@ const FeaturedProducts = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
           >
-            Découvrez nos sacs artisanaux les plus populaires, façonnés avec soin et attention aux détails
+            {t('description')}
           </motion.p>
         </motion.div>
 
@@ -151,8 +165,8 @@ const FeaturedProducts = () => {
           </div>
         ) : featuredProducts.length === 0 ? (
           <div className="text-center py-12 mb-16">
-            <p className="text-lg text-gray-600 font-light">Aucun produit disponible pour le moment.</p>
-            <p className="text-sm text-gray-500 font-light mt-2">Revenez bientôt pour découvrir nos nouveautés!</p>
+            <p className="text-lg text-gray-600 font-light">{t('empty')}</p>
+            <p className="text-sm text-gray-500 font-light mt-2">{t('emptySubtext')}</p>
           </div>
         ) : (
           <div className="relative mb-16">
@@ -221,23 +235,23 @@ const FeaturedProducts = () => {
                   </motion.button>
                 </div>
 
-                <div className="overflow-hidden">
+                <div
+                  className="overflow-hidden"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
                   <motion.div
                     animate={{ x: `-${currentSlide * 100}%` }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.1}
-                    onDragEnd={handleDragEnd}
-                    className="flex cursor-grab active:cursor-grabbing"
+                    className="flex"
                   >
                     {featuredProducts.map((product, index) => (
-                      <motion.div
+                      <div
                         key={product.id}
                         className="w-full flex-shrink-0 px-2"
                       >
                         <motion.div
-                          initial={{ opacity: 0.8, scale: 0.95 }}
                           animate={{ 
                             opacity: index === currentSlide ? 1 : 0.8,
                             scale: index === currentSlide ? 1 : 0.95 
@@ -260,7 +274,7 @@ const FeaturedProducts = () => {
                             }} 
                           />
                         </motion.div>
-                      </motion.div>
+                      </div>
                     ))}
                   </motion.div>
                 </div>
@@ -285,7 +299,7 @@ const FeaturedProducts = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1 }}
                 >
-                  Glissez pour découvrir nos produits
+                  {t('swipeHint')}
                 </motion.div>
               </div>
             )}
@@ -306,7 +320,7 @@ const FeaturedProducts = () => {
               whileTap={{ scale: 0.98 }}
               className="bg-amber-600 hover:bg-amber-700 text-white px-10 py-4 font-light tracking-wide transition-colors inline-flex items-center gap-3"
             >
-              <span>Voir tous les produits</span>
+              <span>{t('viewAll')}</span>
               <ArrowRight className="w-5 h-5" />
             </motion.button>
           </Link>

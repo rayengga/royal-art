@@ -3,12 +3,14 @@
 import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Minus, Plus, X, ShoppingBag, ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, getTotalPrice, getTotalItems, clearCart } = useCart();
+  const t = useTranslations('cart');
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -38,21 +40,20 @@ export default function CartPage() {
               <ShoppingBag className="w-16 h-16 text-muted-foreground" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              Votre Panier est Vide
+              {t('empty')}
             </h1>
             <p className="text-muted-foreground mb-8 text-lg">
-              Vous n'avez pas encore ajouté d'articles à votre panier. 
-              Découvrez notre collection de sacs artisanaux.
+              {t('emptyDesc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild className="clean-button">
                 <Link href="/shop">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Continuer vos Achats
+                  {t('continueShopping')}
                 </Link>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/">Retour à l'Accueil</Link>
+                <Link href="/">{t('backToHome')}</Link>
               </Button>
             </div>
           </motion.div>
@@ -73,10 +74,10 @@ export default function CartPage() {
         >
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-              Panier
+              {t('title')}
             </h1>
             <div className="text-muted-foreground">
-              {totalItems} {totalItems === 1 ? 'article' : 'articles'}
+              {totalItems} {totalItems === 1 ? t('item') : t('items')}
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -85,7 +86,7 @@ export default function CartPage() {
               className="flex items-center text-amber-700 hover:text-amber-600 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Continuer vos Achats
+              {t('continueShopping')}
             </Link>
             {items.length > 1 && (
               <button
@@ -93,7 +94,7 @@ export default function CartPage() {
                 className="flex items-center text-red-500 hover:text-red-400 transition-colors text-sm"
               >
                 <Trash2 className="w-4 h-4 mr-1" />
-                Vider le Panier
+                {t('clearCart')}
               </button>
             )}
           </div>
@@ -163,7 +164,7 @@ export default function CartPage() {
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-between mt-4">
                         <div className="flex items-center gap-3">
-                          <span className="text-sm text-muted-foreground">Quantité:</span>
+                          <span className="text-sm text-muted-foreground">{t('quantity')}</span>
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => handleQuantityChange(item.product.id, item.quantity - 1)}
@@ -191,7 +192,7 @@ export default function CartPage() {
                           </div>
                           {item.quantity > 1 && (
                             <div className="text-xs text-muted-foreground">
-                              {item.product.price.toFixed(2)} TND each
+                              {item.product.price.toFixed(2)} TND {t('each')}
                             </div>
                           )}
                         </div>
@@ -212,23 +213,23 @@ export default function CartPage() {
               className="bg-white rounded-xl p-6 border border-border shadow-sm sticky top-24"
             >
               <h2 className="text-xl font-semibold mb-6 text-foreground">
-                Récapitulatif
+                {t('summary')}
               </h2>
               
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal ({totalItems} items)</span>
+                  <span className="text-muted-foreground">{t('subtotal')} ({totalItems} {t('items')})</span>
                   <span className="text-foreground">{totalPrice.toFixed(2)} TND</span>
                 </div>
                 
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-muted-foreground">{t('shipping')}</span>
                   <span className="text-foreground">{shipping.toFixed(2)} TND</span>
                 </div>
                 
                 <div className="border-t border-border pt-4">
                   <div className="flex justify-between text-lg font-semibold">
-                    <span className="text-foreground">Total</span>
+                    <span className="text-foreground">{t('total')}</span>
                     <span className="text-amber-700">{finalTotal.toFixed(2)} TND</span>
                   </div>
                 </div>
@@ -238,7 +239,7 @@ export default function CartPage() {
               <Button asChild className="w-full clean-button mb-4">
                 <Link href="/checkout">
                   <span className="flex items-center justify-center">
-                    Passer la Commande
+                    {t('checkout')}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </span>
                 </Link>
@@ -250,11 +251,10 @@ export default function CartPage() {
                   <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
-                  Paiement Sécurisé
+                  {t('securePayment')}
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Vos informations sont protégées et sécurisées. 
-                  Paiement à la livraison disponible.
+                  {t('securePaymentDesc')}
                 </p>
               </div>
             </motion.div>
@@ -270,14 +270,14 @@ export default function CartPage() {
           className="mt-16"
         >
           <h2 className="text-2xl font-bold mb-6 text-foreground">
-            Vous Aimerez Aussi
+            {t('youMayAlsoLike')}
           </h2>
           <div className="text-center py-12 bg-muted rounded-lg border border-border">
             <p className="text-muted-foreground">
-              Des recommandations apparaîtront ici basées sur votre panier.
+              {t('recommendationsPlaceholder')}
             </p>
             <Button asChild variant="outline" className="mt-4">
-              <Link href="/shop">Voir Tous les Produits</Link>
+              <Link href="/shop">{t('viewAllProducts')}</Link>
             </Button>
           </div>
         </motion.section>

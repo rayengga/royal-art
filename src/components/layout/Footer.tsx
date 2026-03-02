@@ -1,39 +1,44 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const t = useTranslations('footer');
+  const locale = useLocale();
+  const isArabic = locale === 'ar';
 
   const footerSections = [
     {
-      title: 'Liens Rapides',
+      title: t('quickLinks'),
       links: [
-        { name: 'Accueil', href: '/' },
-        { name: 'Boutique', href: '/shop' },
-        { name: 'À Propos', href: '/about' },
-        { name: 'Contact', href: '/contact' },
+        { name: t('home'), href: '/' as const },
+        { name: t('shop'), href: '/shop' as const },
+        { name: t('about'), href: '/about' as const },
+        { name: t('contact'), href: '/contact' as const },
       ],
     },
     {
-      title: 'Collections',
+      title: t('collections'),
       links: [
-        { name: 'Sacs', href: '/shop?category=sacs' },
-        { name: 'Couffins', href: '/shop?category=couffins' },
-        { name: 'Pochettes', href: '/shop?category=pochettes' },
-        { name: 'Nouveautés', href: '/shop?featured=true' },
+        { name: t('bags'), href: '/shop?category=sacs' as const },
+        { name: t('baskets'), href: '/shop?category=couffins' as const },
+        { name: t('pouches'), href: '/shop?category=pochettes' as const },
+        { name: t('newArrivals'), href: '/shop?featured=true' as const },
       ],
     },
     {
-      title: 'Service Client',
+      title: t('customerService'),
       links: [
-        { name: 'Livraison', href: '/shipping' },
-        { name: 'Retours', href: '/returns' },
-        { name: 'FAQ', href: '/faq' },
-        { name: 'Support', href: '/support' },
+        { name: t('delivery'), href: '/contact' as const },
+        { name: t('returns'), href: '/contact' as const },
+        { name: t('faq'), href: '/contact' as const },
+        { name: t('support'), href: '/contact' as const },
       ],
     },
   ];
@@ -52,60 +57,85 @@ const Footer = () => {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-4 group w-fit">
               {/* Logo SVG */}
-              <div className="relative">
-                <img 
+              <div className="relative w-16 h-16 md:w-20 md:h-20">
+                <Image 
                   src="/logo.svg" 
                   alt="Royal Artisans Logo" 
-                  className="h-10 w-auto"
+                  width={80}
+                  height={80}
+                  className="h-16 md:h-20 w-auto"
                 />
               </div>
               
               {/* Brand Name - Same as Header */}
-              <div className="relative">
+              <div className="relative" dir="ltr">
                 <div className="flex items-center gap-1">
-                  <div className="flex">
-                    {['R', 'O', 'Y', 'A', 'L'].map((letter, index) => (
+                  {isArabic ? (
+                    <>
                       <span
-                        key={index}
-                        className="text-2xl font-serif relative"
+                        className="text-2xl font-serif"
                         style={{
                           background: 'linear-gradient(135deg, rgb(146, 64, 14) 0%, rgb(217, 119, 6) 50%, rgb(146, 64, 14) 100%)',
                           backgroundClip: 'text',
                           WebkitBackgroundClip: 'text',
                           color: 'transparent',
                           fontWeight: 700,
-                          letterSpacing: '0.08em'
                         }}
                       >
-                        {letter}
+                        رويال
                       </span>
-                    ))}
-                  </div>
-                  <span className="text-base text-amber-800/60 mx-2 font-light">•</span>
-                  <span className="text-base font-serif text-amber-900/80 tracking-wide italic">
-                    Artisanat
-                  </span>
+                      <span className="text-base text-amber-800/60 mx-2 font-light">•</span>
+                      <span className="text-base font-serif text-amber-900/80 tracking-wide italic">
+                        أرتيزانا
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex">
+                        {['R', 'O', 'Y', 'A', 'L'].map((letter, index) => (
+                          <span
+                            key={index}
+                            className="text-2xl font-serif relative"
+                            style={{
+                              background: 'linear-gradient(135deg, rgb(146, 64, 14) 0%, rgb(217, 119, 6) 50%, rgb(146, 64, 14) 100%)',
+                              backgroundClip: 'text',
+                              WebkitBackgroundClip: 'text',
+                              color: 'transparent',
+                              fontWeight: 700,
+                              letterSpacing: '0.08em'
+                            }}
+                          >
+                            {letter}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-base text-amber-800/60 mx-2 font-light">•</span>
+                      <span className="text-base font-serif text-amber-900/80 tracking-wide italic">
+                        {t('artisanat')}
+                      </span>
+                    </>
+                  )}
                 </div>
                 <div className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700 rounded-full w-0 group-hover:w-full transition-all duration-500" />
               </div>
             </Link>
             <p className="text-muted-foreground text-sm">
-              Sacs artisanaux pour femmes faits à la main en Tunisie. Création de pièces uniques qui allient tradition et élégance moderne.
+              {t('description')}
             </p>
             
             {/* Contact Info */}
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4 text-amber-500" />
-                <span>royalartisants2022@gmail.com</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Mail className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                <span dir="ltr">royalartisants2022@gmail.com</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Phone className="w-4 h-4 text-amber-500" />
-                <span>+216 58 955 494</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Phone className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                <span dir="ltr">+216 58 955 494</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 text-amber-500" />
-                <span>Tunisie</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                <span>{t('artisanat')}</span>
               </div>
             </div>
           </div>
@@ -156,7 +186,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <p className="text-muted-foreground text-sm">
-              © {currentYear} Royal Artisanat. Tous droits réservés.
+              {t('copyright', { year: currentYear })}
             </p>
 
             {/* Social Links */}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { FilterOptions } from '@/types';
@@ -31,6 +32,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
   isFiltersOpen,
   onToggleFilters,
 }) => {
+  const t = useTranslations('filters');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
@@ -87,7 +89,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           type="text"
-          placeholder="Search products..."
+          placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10"
@@ -96,7 +98,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
 
       {/* Mobile Filter Toggle */}
       <div className="flex items-center justify-between lg:hidden">
-        <h3 className="text-lg font-semibold">Filters</h3>
+        <h3 className="text-lg font-semibold">{t('filters')}</h3>
         <Button
           variant="outline"
           size="sm"
@@ -104,14 +106,14 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
           className="flex items-center space-x-2"
         >
           <Filter className="w-4 h-4" />
-          <span>Filters</span>
+          <span>{t('filters')}</span>
         </Button>
       </div>
 
       {/* Filter Panel */}
         <div className="space-y-6">      <div className={`${isFiltersOpen ? "block" : "hidden"} lg:block`}>
           <div className="space-y-3">
-            <h4 className="font-semibold text-foreground">Category</h4>
+            <h4 className="font-semibold text-foreground">{t('category')}</h4>
             <div className="space-y-2">
             <label className="flex items-center space-x-3 cursor-pointer group">
               <input
@@ -123,11 +125,11 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                 className="w-4 h-4 text-red-500 bg-background border-border focus:ring-red-500"
               />
               <span className="text-sm group-hover:text-red-500 transition-colors">
-                All Categories
+                {t('allCategories')}
               </span>
             </label>
             {loadingCategories ? (
-              <div className="text-sm text-muted-foreground">Loading categories...</div>
+              <div className="text-sm text-muted-foreground">{t('loading')}</div>
             ) : (
               categories.map((category) => (
                 <label
@@ -153,11 +155,11 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
 
           {/* Price Range Filter */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-foreground">Price Range</h4>
+            <h4 className="font-semibold text-foreground">{t('priceRange')}</h4>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Min Price</label>
+                  <label className="text-xs text-muted-foreground mb-1 block">{t('minPrice')}</label>
                   <Input
                     type="number"
                     value={filters.priceRange.min}
@@ -172,7 +174,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Max Price</label>
+                  <label className="text-xs text-muted-foreground mb-1 block">{t('maxPrice')}</label>
                   <Input
                     type="number"
                     value={filters.priceRange.max}
@@ -192,7 +194,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
 
           {/* Stock Filter */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-foreground">Availability</h4>
+            <h4 className="font-semibold text-foreground">{t('availability')}</h4>
             <label className="flex items-center space-x-3 cursor-pointer group">
               <input
                 type="checkbox"
@@ -201,7 +203,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                 className="w-4 h-4 text-red-500 bg-background border-border focus:ring-red-500 rounded"
               />
               <span className="text-sm group-hover:text-red-500 transition-colors">
-                In Stock Only
+                {t('inStockOnly')}
               </span>
             </label>
           </div>
@@ -215,7 +217,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
               className="w-full flex items-center justify-center space-x-2 border-red-500/20 hover:border-red-500 hover:text-red-500"
             >
               <X className="w-4 h-4" />
-              <span>Clear Filters</span>
+              <span>{t('clearFilters')}</span>
             </Button>
           )}
         </div>

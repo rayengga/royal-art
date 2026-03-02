@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 /**
  * All entrance animations use CSS @keyframes (animate-fade-up + delay variants
@@ -17,6 +18,7 @@ import { ArrowRight } from 'lucide-react';
  * client-side events and never cause hydration issues.
  */
 const Hero = () => {
+  const t = useTranslations('hero');
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-amber-50/50 to-white">
       {/* Subtle dot pattern background */}
@@ -37,23 +39,23 @@ const Hero = () => {
           {/* Top Badge */}
           <div className="animate-fade-up animate-delay-200 flex items-center justify-center gap-3 mb-8">
             <div className="h-px w-12 bg-amber-400" />
-            <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">Depuis 1995</span>
+            <span className="text-sm tracking-[0.2em] text-amber-700 uppercase font-light">{t('badge')}</span>
             <div className="h-px w-12 bg-amber-400" />
           </div>
 
           {/* Main Heading — LCP element; CSS animation keeps it visible for the browser's LCP measurement */}
           <h1 className="animate-fade-up animate-delay-300 text-5xl sm:text-6xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight">
-            Bienvenue chez{' '}
-            <span className="block font-serif italic text-amber-800 mt-2">Royal Artisanat</span>
+            {t('welcomeTo')}{' '}
+            <span className="block font-serif italic text-amber-800 mt-2">{t('brandName')}</span>
           </h1>
 
           {/* Subtitles */}
           <p className="animate-fade-up animate-delay-400 text-xl sm:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed font-light">
-            Découvrez notre collection unique de sacs artisanaux pour femmes, faits à la main en Tunisie
+            {t('subtitle')}
           </p>
 
           <p className="animate-fade-up animate-delay-500 text-base sm:text-lg text-gray-500 mb-12 max-w-2xl mx-auto font-light">
-            Où le vrai style est toujours dans vos mains. Élégance et pratique pour chaque occasion.
+            {t('subtitle2')}
           </p>
 
           {/* CTA Buttons — motion.button is fine here: whileHover/whileTap are client-only */}
@@ -64,7 +66,7 @@ const Hero = () => {
                 whileTap={{ scale: 0.98 }}
                 className="bg-amber-600 hover:bg-amber-700 text-white px-10 py-4 font-light tracking-wide transition-colors inline-flex items-center gap-3"
               >
-                <span>Découvrir la Collection</span>
+                <span>{t('cta')}</span>
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
             </Link>
@@ -75,7 +77,7 @@ const Hero = () => {
                 whileTap={{ scale: 0.98 }}
                 className="border border-amber-600 text-amber-800 hover:bg-amber-50 px-10 py-4 font-light tracking-wide transition-colors"
               >
-                Notre Histoire
+                {t('ourStory')}
               </motion.button>
             </Link>
           </div>
@@ -89,10 +91,10 @@ const Hero = () => {
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-5xl mx-auto">
               {[
-                { value: '1,000+', label: 'Clients Satisfaits' },
-                { value: '5,000+', label: 'Sacs Créés' },
-                { value: '29+', label: 'Années d\'Excellence' },
-                { value: '200+', label: 'Modèles Uniques' }
+                { value: '1,000+', label: t('statClients') },
+                { value: '5,000+', label: t('statBags') },
+                { value: '29+', label: t('statYears') },
+                { value: '200+', label: t('statModels') }
               ].map((stat, index) => (
                 <div
                   key={index}

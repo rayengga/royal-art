@@ -11,8 +11,8 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>;
-  register: (credentials: RegisterCredentials) => Promise<{ success: boolean; error?: string }>;
+  login: (credentials: LoginCredentials) => Promise<{ success: boolean; user?: AuthUser; error?: string }>;
+  register: (credentials: RegisterCredentials) => Promise<{ success: boolean; user?: AuthUser; error?: string }>;
   logout: () => void;
   checkAuth: () => void;
   loading: boolean;
@@ -57,11 +57,30 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, {
-    user: null,
-    isLoading: false, // Start with false to avoid unnecessary loading states
-    isAuthenticated: false,
-  });
+  const [state, dispatch] = useReducer(
+    authReducer,
+    undefined,
+    (): AuthState => {
+      // On protected routes, start in a loading state so route guards don't
+      // redirect before we finish checking the HTTP-only cookie.
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname;
+        const protectedPaths = ['/profile', '/admin'];
+        const needsAuth = protectedPaths.some(path => currentPath.startsWith(path));
+        return {
+          user: null,
+          isLoading: needsAuth,
+          isAuthenticated: false,
+        };
+      }
+
+      return {
+        user: null,
+        isLoading: false,
+        isAuthenticated: false,
+      };
+    }
+  );
 
   useEffect(() => {
     // Only check auth on protected routes or when explicitly needed
@@ -76,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
+      dispatch({ type: 'SET_LOADING', payload: true });
       // Check if user is authenticated via HTTP-only cookie
       const response = await fetch('/api/auth/me', {
         credentials: 'include',
@@ -93,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: 'SET_USER', payload: authUser });
       } else {
         // 401 is expected for non-authenticated users - not an error
-        dispatch({ type: 'SET_LOADING', payload: false });
+        dispatch({ type: 'SET_USER', payload: null });
       }
     } catch (error) {
       // Only log unexpected errors (network issues, etc.)
@@ -104,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> => {
+  const login = async (credentials: LoginCredentials): Promise<{ success: boolean; user?: AuthUser; error?: string }> => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
 
@@ -128,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
 
         dispatch({ type: 'LOGIN_SUCCESS', payload: authUser });
-        return { success: true };
+        return { success: true, user: authUser };
       } else {
         dispatch({ type: 'SET_LOADING', payload: false });
         return { success: false, error: data.error || 'Login failed' };
@@ -139,7 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (credentials: RegisterCredentials): Promise<{ success: boolean; error?: string }> => {
+  const register = async (credentials: RegisterCredentials): Promise<{ success: boolean; user?: AuthUser; error?: string }> => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
 
@@ -168,7 +188,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
 
         dispatch({ type: 'LOGIN_SUCCESS', payload: authUser });
-        return { success: true };
+        return { success: true, user: authUser };
       } else {
         dispatch({ type: 'SET_LOADING', payload: false });
         return { success: false, error: data.error || 'Registration failed' };

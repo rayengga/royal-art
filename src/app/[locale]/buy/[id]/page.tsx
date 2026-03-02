@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
@@ -9,7 +11,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Lazy load UI components to reduce initial bundle size
 const Button = dynamic(() => import('@/components/ui/Button').then(mod => ({ default: mod.Button })), {
-  loading: () => <button className="w-full py-6 bg-gray-200 animate-pulse rounded-lg" disabled>Loading...</button>
+  loading: () => <button className="w-full py-6 bg-gray-200 animate-pulse rounded-lg" disabled>...</button>
 });
 const Input = dynamic(() => import('@/components/ui/Input').then(mod => ({ default: mod.Input })), {
   loading: () => <div className="h-10 bg-gray-200 animate-pulse rounded-lg"></div>
@@ -70,6 +72,7 @@ interface Product {
 export default function BuyNowPage() {
   const params = useParams();
   const router = useRouter();
+  const t = useTranslations('buy');
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -171,7 +174,7 @@ export default function BuyNowPage() {
       }
     } catch (error) {
       console.error('Error submitting order:', error);
-      alert('Une erreur est survenue. Veuillez réessayer.');
+      alert(t('error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -208,10 +211,10 @@ export default function BuyNowPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-foreground mb-4">
-              {error || 'Product Not Found'}
+              {error || t('notFound')}
             </h1>
             <p className="text-muted-foreground mb-8">
-              The product you're looking for doesn't exist or has been removed.
+              {t('notFoundDesc')}
             </p>
           </div>
         </div>
@@ -328,47 +331,47 @@ export default function BuyNowPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-amber-900 mb-3">Commande confirmée !</h3>
-                  <p className="text-amber-700 mb-4">Merci pour votre commande. Nous vous contacterons bientôt.</p>
-                  <p className="text-sm text-amber-600">Redirection vers la page d'accueil...</p>
+                  <h3 className="text-2xl font-bold text-amber-900 mb-3">{t('success')}</h3>
+                  <p className="text-amber-700 mb-4">{t('successMessage')}</p>
+                  <p className="text-sm text-amber-600">{t('redirecting')}</p>
                 </motion.div>
               ) : (
                 <>
-                  <h2 className="text-3xl font-bold text-amber-900 mb-2">Commander maintenant</h2>
+                  <h2 className="text-3xl font-bold text-amber-900 mb-2">{t('formTitle')}</h2>
                   <p className="text-amber-700 mb-6">{product.name}</p>
                   
                   <form onSubmit={handleBuyNowSubmit} className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-amber-900 mb-2">
-                        Nom complet *
+                        {t('fullName')}
                       </label>
                       <Input
                         type="text"
                         required
                         value={buyFormData.fullName}
                         onChange={(e) => setBuyFormData({ ...buyFormData, fullName: e.target.value })}
-                        placeholder="Votre nom complet"
+                        placeholder={t('fullNamePlaceholder')}
                         className="bg-white border-amber-300 focus:border-amber-500"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-amber-900 mb-2">
-                        Numéro de téléphone *
+                        {t('phone')}
                       </label>
                       <Input
                         type="tel"
                         required
                         value={buyFormData.phoneNumber}
                         onChange={(e) => setBuyFormData({ ...buyFormData, phoneNumber: e.target.value })}
-                        placeholder="+216 XX XXX XXX"
+                        placeholder={t('phonePlaceholder')}
                         className="bg-white border-amber-300 focus:border-amber-500"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-amber-900 mb-2">
-                        Gouvernorat *
+                        {t('governorate')}
                       </label>
                       <select
                         required
@@ -376,7 +379,7 @@ export default function BuyNowPage() {
                         onChange={(e) => setBuyFormData({ ...buyFormData, governorate: e.target.value })}
                         className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                       >
-                        <option value="">Sélectionnez un gouvernorat</option>
+                        <option value="">{t('governoratePlaceholder')}</option>
                         {TUNISIA_GOVERNORATES.map((gov) => (
                           <option key={gov} value={gov}>{gov}</option>
                         ))}
@@ -385,12 +388,12 @@ export default function BuyNowPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-amber-900 mb-2">
-                        Adresse de livraison
+                        {t('address')}
                       </label>
                       <textarea
                         value={buyFormData.address}
                         onChange={(e) => setBuyFormData({ ...buyFormData, address: e.target.value })}
-                        placeholder="Adresse complète (optionnel)"
+                        placeholder={t('addressPlaceholder')}
                         rows={3}
                         className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white resize-none"
                       />
@@ -398,7 +401,7 @@ export default function BuyNowPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-amber-900 mb-2">
-                        Quantité
+                        {t('quantity')}
                       </label>
                       <div className="flex items-center space-x-3">
                         <button
@@ -418,23 +421,23 @@ export default function BuyNowPage() {
                           +
                         </button>
                       </div>
-                      <p className="text-xs text-amber-600 mt-1">{product.stock} articles disponibles</p>
+                      <p className="text-xs text-amber-600 mt-1">{t('available', { count: product.stock })}</p>
                     </div>
 
                     {/* Order Summary */}
                     <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border-2 border-amber-300">
-                      <h3 className="text-lg font-semibold text-amber-900 mb-4">Résumé de la commande</h3>
+                      <h3 className="text-lg font-semibold text-amber-900 mb-4">{t('orderSummary')}</h3>
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm mb-2">
-                          <span>Prix:</span>
+                          <span>{t('price')}</span>
                           <span className="font-medium">{(product.price * quantity).toFixed(3)} TND</span>
                         </div>
                         <div className="flex justify-between text-sm mb-2">
-                          <span>Frais de livraison:</span>
+                          <span>{t('shippingFee')}</span>
                           <span className="font-medium">7.000 TND</span>
                         </div>
                         <div className="border-t border-amber-200 mt-2 pt-2 flex justify-between text-lg font-semibold text-amber-700">
-                          <span>Total:</span>
+                          <span>{t('total')}</span>
                           <span>{(product.price * quantity + 7).toFixed(3)} TND</span>
                         </div>
                       </div>
@@ -451,15 +454,15 @@ export default function BuyNowPage() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
-                          Traitement en cours...
+                          {t('processing')}
                         </span>
                       ) : (
-                        'Confirmer la commande'
+                        t('confirm')
                       )}
                     </Button>
 
                     <p className="text-xs text-center text-amber-600 mt-4">
-                      En passant commande, vous acceptez nos conditions de vente.
+                      {t('terms')}
                     </p>
                   </form>
                 </>

@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { CartProvider } from "@/context/CartContext";
-import { AuthProvider } from "@/context/AuthContext";
-import LayoutWrapper from "./layout-wrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,7 +22,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
     languages: {
-      "fr-TN": "/",
+      "fr-TN": "/fr",
+      "en": "/en",
+      "ar-TN": "/ar",
     },
   },
   openGraph: {
@@ -80,20 +79,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <head>
-        {/* Preconnect to the external image CDN used by the hero and product images */}
         <link rel="preconnect" href="https://royal-artisanat.store" />
         <link rel="dns-prefetch" href="https://royal-artisanat.store" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <AuthProvider>
-          <CartProvider>
-            <LayoutWrapper>
-              {children}
-            </LayoutWrapper>
-          </CartProvider>
-        </AuthProvider>
+        {children}
       </body>
     </html>
   );
