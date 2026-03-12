@@ -36,11 +36,11 @@ const Navbar = () => {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="relative w-[120px] h-[120px] md:w-28 md:h-28 -my-7 md:-my-6">
+              <div className="relative w-[80px] h-[120px] md:w-[75px] md:h-28 -my-7 md:-my-6">
                 <Image
-                  src="/logo.svg"
+                  src="/logo-2.svg"
                   alt="Royal Artisans Logo"
-                  width={120}
+                  width={80}
                   height={120}
                   className="h-[120px] md:h-28 w-auto"
                   priority

@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     description: "Découvrez notre collection unique de sacs artisanaux pour femmes faits à la main en Tunisie. Artisanat authentique et élégance intemporelle.",
     images: [
       {
-        url: "/logo.svg",
+        url: "/logo-2.svg",
         width: 1200,
         height: 630,
         alt: "Royal Artisanat - Sacs Artisanaux Tunisiens",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Royal Artisanat - Sacs Artisanaux Tunisiens",
     description: "Découvrez notre collection unique de sacs artisanaux pour femmes faits à la main en Tunisie.",
-    images: ["/logo.svg"],
+    images: ["/logo-2.svg"],
   },
   robots: {
     index: true,
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   icons: {
-    icon: "/logo.svg",
-    apple: "/logo.svg",
+    icon: "/logo-2.svg",
+    apple: "/logo-2.svg",
   },
   category: "ecommerce",
 };

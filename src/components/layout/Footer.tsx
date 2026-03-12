@@ -55,15 +55,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-4 group w-fit">
+            <Link href="/" className="flex items-center space-x-3 group w-fit">
               {/* Logo SVG */}
-              <div className="relative w-16 h-16 md:w-20 md:h-20">
+              <div className="relative w-14 h-[5.25rem] md:w-16 md:h-24">
                 <Image 
-                  src="/logo.svg" 
+                  src="/logo-2.svg" 
                   alt="Royal Artisans Logo" 
-                  width={80}
-                  height={80}
-                  className="h-16 md:h-20 w-auto"
+                  width={64}
+                  height={96}
+                  className="h-[5.25rem] md:h-24 w-auto"
                 />
               </div>
               

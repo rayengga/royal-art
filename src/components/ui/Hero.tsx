@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -44,10 +45,23 @@ const Hero = () => {
           </div>
 
           {/* Main Heading — LCP element; CSS animation keeps it visible for the browser's LCP measurement */}
-          <h1 className="animate-fade-up animate-delay-300 text-5xl sm:text-6xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight">
-            {t('welcomeTo')}{' '}
-            <span className="block font-serif italic text-amber-800 mt-2">{t('brandName')}</span>
-          </h1>
+          <div className="animate-fade-up animate-delay-300 mb-6">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light text-gray-900 leading-tight">
+              {t('welcomeTo')}
+            </h1>
+            <div className="flex justify-center mt-2">
+              <div className="overflow-hidden w-[380px] sm:w-[420px] md:w-[520px] lg:w-[630px] h-[150px] sm:h-[160px] md:h-[200px] lg:h-[240px]">
+                <Image
+                  src="/royal_artisanat.svg"
+                  alt="Royal Artisanat"
+                  width={1264}
+                  height={848}
+                  className="w-full h-auto -mt-[18%]"
+                  priority
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Subtitles */}
           <p className="animate-fade-up animate-delay-400 text-xl sm:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed font-light">
@@ -80,55 +94,6 @@ const Hero = () => {
                 {t('ourStory')}
               </motion.button>
             </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="animate-fade-up animate-delay-700 relative">
-            {/* Decorative line */}
-            <div className="flex items-center justify-center mb-12">
-              <div className="h-px flex-1 max-w-xs bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
-            </div>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-5xl mx-auto">
-              {[
-                { value: '1,000+', label: t('statClients') },
-                { value: '5,000+', label: t('statBags') },
-                { value: '29+', label: t('statYears') },
-                { value: '200+', label: t('statModels') }
-              ].map((stat, index) => (
-                <div
-                  key={index}
-                  className="animate-fade-up group relative transition-transform duration-300 hover:-translate-y-2"
-                  style={{ animationDelay: `${0.8 + index * 0.1}s` }}
-                >
-                  {/* Card background */}
-                  <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm border border-amber-200/30 p-8 transition-all duration-500 group-hover:border-amber-400/50 group-hover:shadow-lg">
-                    {/* Gradient overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 via-white to-orange-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    {/* Decorative corner accent */}
-                    <div className="absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-l from-amber-400 to-transparent" />
-                      <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-amber-400 to-transparent" />
-                    </div>
-
-                    <div className="relative text-center">
-                      <div className="text-4xl lg:text-5xl font-light text-amber-800 mb-3 tracking-tight group-hover:text-amber-900 transition-colors duration-300">
-                        {stat.value}
-                      </div>
-                      <div className="text-xs lg:text-sm text-gray-600 font-light tracking-[0.15em] uppercase">
-                        {stat.label}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom decorative line */}
-            <div className="flex items-center justify-center mt-12">
-              <div className="h-px flex-1 max-w-xs bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
-            </div>
           </div>
 
         </div>
